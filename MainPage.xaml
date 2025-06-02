@@ -1,0 +1,49 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TipCalculatorApp.MainPage"
+             xmlns:vm="clr-namespace:TipCalculatorApp.ViewModels"
+             Title="Tip Calculator">
+
+    <ContentPage.BindingContext>
+        <vm:TipCalculatorViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <!-- Total a pagar y detalles -->
+        <StackLayout HorizontalOptions="Center" >
+            <Label Text="{Binding TotalWithTip, StringFormat='Total con propina: {0:C2}'}"
+                   FontSize="24"
+                   FontAttributes="Bold" />
+            <Label Text="{Binding TotalPerPerson, StringFormat='Por persona: {0:C2}'}"
+                   FontSize="18" />
+            <Label Text="{Binding TipPerPerson, StringFormat='Propina por persona: {0:C2}'}"
+                   FontSize="14"
+                   TextColor="Gray" />
+        </StackLayout>
+
+        <!-- Input total boleta -->
+        <Entry Keyboard="Numeric"
+               Placeholder="Total de la boleta"
+               Text="{Binding TotalBill, Mode=TwoWay}" />
+
+        <!-- Botones para propina -->
+        <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+            <Button Text="10%" Command="{Binding SetTipCommand}" CommandParameter="10" />
+            <Button Text="15%" Command="{Binding SetTipCommand}" CommandParameter="15" />
+            <Button Text="20%" Command="{Binding SetTipCommand}" CommandParameter="20"/>
+        </HorizontalStackLayout>
+
+        <!-- Slider para propina -->
+        <Slider Minimum="0" Maximum="50" Value="{Binding SliderTipPercent, Mode=TwoWay}" />
+        <Label Text="{Binding SliderTipPercent, StringFormat='Propina: {0}%'}" HorizontalOptions="Center" />
+
+        <!-- Contador personas -->
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" VerticalOptions="Center">
+            <Button x:Name="DecreaseBtn" Text="-" Command="{Binding DecreasePeopleCommand}" />
+            <Label Text="{Binding PeopleCount}" FontSize="20" VerticalOptions="Center" />
+            <Button x:Name="IncreaseBtn" Text="+" Command="{Binding IncreasePeopleCommand}" />
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>

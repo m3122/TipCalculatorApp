@@ -1,0 +1,28 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.csproj.user
+.vscode/
+*.vs/
+
+# Xamarin/Mobile-specific
+*.apk
+*.ap_ 
+*.aab
+*.keystore
+*.zip
+*.ipa
+
+# IDE settings
+.idea/
+*.DS_Store
+
+# MAUI auto-generated stuff
+*.nupkg
+*.lock.json
+platforms/
