@@ -8,42 +8,66 @@
         <vm:TipCalculatorViewModel />
     </ContentPage.BindingContext>
 
-    <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        
+        <VerticalStackLayout Spacing="10">
+            <Label Text="Total Consumo:" 
+                   FontSize="18"
+                   VerticalOptions="Center" />
+            <Entry Keyboard="Numeric"
+                   Placeholder="Ingrese el total de la boleta"
+                   Text="{Binding TotalBill, Mode=TwoWay}"
+                   FontSize="18"
+                   HorizontalOptions="Fill"
+                   TextColor="Black"
+                   BackgroundColor="#F0F0F0"
+                   HeightRequest="40"
+                   Margin="0,0,0,10" />
+        </VerticalStackLayout>
 
-        <!-- Total a pagar y detalles -->
-        <StackLayout HorizontalOptions="Center" >
-            <Label Text="{Binding TotalWithTip, StringFormat='Total con propina: {0:C2}'}"
-                   FontSize="24"
-                   FontAttributes="Bold" />
-            <Label Text="{Binding TotalPerPerson, StringFormat='Por persona: {0:C2}'}"
-                   FontSize="18" />
-            <Label Text="{Binding TipPerPerson, StringFormat='Propina por persona: {0:C2}'}"
+        <VerticalStackLayout Grid.Row="1" Spacing="15">
+
+            <Label Text="Elija propina" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+
+            <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                <Button Text="10%" Command="{Binding SetTipCommand}" CommandParameter="10" />
+                <Button Text="15%" Command="{Binding SetTipCommand}" CommandParameter="15" />
+                <Button Text="20%" Command="{Binding SetTipCommand}" CommandParameter="20" />
+            </HorizontalStackLayout>
+
+            <Slider Minimum="0" Maximum="50" 
+                    Value="{Binding SliderTipPercent, Mode=TwoWay}" />
+            <Label Text="{Binding SliderTipPercent, StringFormat='Propina: {0}%'}" 
                    FontSize="14"
-                   TextColor="Gray" />
+                   HorizontalOptions="Center" />
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+                <Button x:Name="DecreaseBtn" Text="-" Command="{Binding DecreasePeopleCommand}" />
+                <Label Text="{Binding PeopleCount}" FontSize="20" VerticalOptions="Center" />
+                <Button x:Name="IncreaseBtn" Text="+" Command="{Binding IncreasePeopleCommand}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+
+        <StackLayout Grid.Row="2" Spacing="5"
+                     VerticalOptions="End"
+                     HorizontalOptions="FillAndExpand"
+                     Padding="0,20,0,0">
+            <Label Text="{Binding TotalWithTip, StringFormat='Total con Propina: {0:C2}'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+            <Label Text="{Binding TotalPerPerson, StringFormat='Total por Persona: {0:C2}'}"
+                   FontSize="18"
+                   HorizontalOptions="Center" />
+            <Label Text="{Binding SubtotalPerPerson, StringFormat='Subtotal por Persona: {0:C2}'}"
+                   FontSize="16"
+                   HorizontalOptions="Center" />
+            <Label Text="{Binding TipPerPerson, StringFormat='Propina por Persona: {0:C2}'}"
+                   FontSize="14"
+                   TextColor="Gray"
+                   HorizontalOptions="Center" />
         </StackLayout>
 
-        <!-- Input total boleta -->
-        <Entry Keyboard="Numeric"
-               Placeholder="Total de la boleta"
-               Text="{Binding TotalBill, Mode=TwoWay}" />
-
-        <!-- Botones para propina -->
-        <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
-            <Button Text="10%" Command="{Binding SetTipCommand}" CommandParameter="10" />
-            <Button Text="15%" Command="{Binding SetTipCommand}" CommandParameter="15" />
-            <Button Text="20%" Command="{Binding SetTipCommand}" CommandParameter="20"/>
-        </HorizontalStackLayout>
-
-        <!-- Slider para propina -->
-        <Slider Minimum="0" Maximum="50" Value="{Binding SliderTipPercent, Mode=TwoWay}" />
-        <Label Text="{Binding SliderTipPercent, StringFormat='Propina: {0}%'}" HorizontalOptions="Center" />
-
-        <!-- Contador personas -->
-        <HorizontalStackLayout HorizontalOptions="Center" Spacing="20" VerticalOptions="Center">
-            <Button x:Name="DecreaseBtn" Text="-" Command="{Binding DecreasePeopleCommand}" />
-            <Label Text="{Binding PeopleCount}" FontSize="20" VerticalOptions="Center" />
-            <Button x:Name="IncreaseBtn" Text="+" Command="{Binding IncreasePeopleCommand}" />
-        </HorizontalStackLayout>
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
+

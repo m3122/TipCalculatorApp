@@ -11,6 +11,7 @@ namespace TipCalculatorApp.ViewModels
         private int tipPercent;
         private int peopleCount;
         private decimal sliderTipPercent;
+        private bool _sliderHasPriority; // para evitar sincronización inicial
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -20,6 +21,7 @@ namespace TipCalculatorApp.ViewModels
             TipPercent = 10;
             SliderTipPercent = 0;
             PeopleCount = 1;
+            _sliderHasPriority = false; // para evitar sincronización inicial
         }
 
         public decimal TotalBill
@@ -44,8 +46,9 @@ namespace TipCalculatorApp.ViewModels
                 if (tipPercent != value)
                 {
                     tipPercent = value;
+                    if (!_sliderHasPriority)
+                        SliderTipPercent = value; // solo sincroniza si no viene del slider
                     OnPropertyChanged();
-                    SliderTipPercent = value; // sincroniza slider con botón
                     Recalculate();
                 }
             }
@@ -58,14 +61,17 @@ namespace TipCalculatorApp.ViewModels
             {
                 if (sliderTipPercent != value)
                 {
+                    _sliderHasPriority = true;
                     sliderTipPercent = value;
+                    tipPercent = (int)sliderTipPercent;
                     OnPropertyChanged();
-                    tipPercent = (int)sliderTipPercent; // sincroniza botón con slider
                     OnPropertyChanged(nameof(TipPercent));
                     Recalculate();
+                    _sliderHasPriority = false;
                 }
             }
         }
+
 
         public int PeopleCount
         {
@@ -110,6 +116,21 @@ namespace TipCalculatorApp.ViewModels
             }
         }
 
+        private decimal subtotalPerPerson;
+        public decimal SubtotalPerPerson
+        {
+            get => subtotalPerPerson;
+            private set
+            {
+                if (subtotalPerPerson != value)
+                {
+                    subtotalPerPerson = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
         private decimal totalPerPerson;
         public decimal TotalPerPerson
         {
@@ -128,9 +149,22 @@ namespace TipCalculatorApp.ViewModels
         {
             decimal tipAmount = TotalBill * tipPercent / 100m;
             TotalWithTip = TotalBill + tipAmount;
-            TipPerPerson = PeopleCount == 0 ? 0 : (TotalBill * TipPercent / 100) / PeopleCount;
-            TotalPerPerson = PeopleCount == 0 ? 0 : TotalBill / PeopleCount;
+
+            if (PeopleCount > 0)
+            {
+                TipPerPerson = tipAmount / PeopleCount;
+                SubtotalPerPerson = TotalBill / PeopleCount;
+                TotalPerPerson = TotalWithTip / PeopleCount;
+            }
+            else
+            {
+                TipPerPerson = 0;
+                SubtotalPerPerson = 0;
+                TotalPerPerson = 0;
+            }
         }
+
+
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
